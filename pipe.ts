@@ -1,3 +1,6 @@
+export interface PipeContext {
+}
+
 export interface PipeUnion<C, T> {
     flow(ctx: C, content?: T): Promise<T>;
 }
