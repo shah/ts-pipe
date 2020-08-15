@@ -15,8 +15,8 @@ interface ChainedTarget extends TestTarget {
     previous: TestTarget;
 }
 
-class TestPipeStart implements p.Pipe<TestContext, TestTarget> {
-    async execute(ctx: TestContext, content?: TestTarget): Promise<TestTarget> {
+class TestPipeStart implements p.PipeUnion<TestContext, TestTarget> {
+    async flow(ctx: TestContext, content?: TestTarget): Promise<TestTarget> {
         ctx.count++;
         return {
             isTestObject: true
@@ -24,8 +24,8 @@ class TestPipeStart implements p.Pipe<TestContext, TestTarget> {
     }
 }
 
-class TestPipeUnion implements p.Pipe<TestContext, TestTarget> {
-    async execute(ctx: TestContext, content: TestTarget): Promise<ChainedTarget> {
+class TestPipeUnion implements p.PipeUnion<TestContext, TestTarget> {
+    async flow(ctx: TestContext, content: TestTarget): Promise<ChainedTarget> {
         ctx.count++;
         return {
             isTestObject: true,
@@ -44,7 +44,7 @@ export class TestSuite {
     async testSingleValidFollowedResource(): Promise<void> {
         const pipe = p.pipe<TestContext, TestTarget>(new TestPipeStart(), new TestPipeUnion());
         const ctx: TestContext = { isTestContext: true, count: 0 };
-        const result = (await pipe.execute(ctx)) as ChainedTarget;
+        const result = (await pipe.flow(ctx)) as ChainedTarget;
         Expect(ctx.count).toBe(2);
         Expect(result.isChainedTarget).toBe(true);
     }
