@@ -35,16 +35,45 @@ class TestPipeUnion implements p.PipeUnion<TestContext, TestTarget> {
     }
 }
 
+class TestPipeStartSync implements p.PipeUnionSync<TestContext, TestTarget> {
+    flow(ctx: TestContext, content?: TestTarget): TestTarget {
+        ctx.count++;
+        return {
+            isTestObject: true
+        }
+    }
+}
+
+class TestPipeUnionSync implements p.PipeUnionSync<TestContext, TestTarget> {
+    flow(ctx: TestContext, content: TestTarget): ChainedTarget {
+        ctx.count++;
+        return {
+            isTestObject: true,
+            isChainedTarget: true,
+            previous: content
+        }
+    }
+}
+
 @TestFixture("Pipe Test Suite")
 export class TestSuite {
     constructor() {
     }
 
-    @Test("Test simple pipe")
-    async testSingleValidFollowedResource(): Promise<void> {
+    @Test("Test async pipe")
+    async testAsyncPipe(): Promise<void> {
         const pipe = p.pipe<TestContext, TestTarget>(new TestPipeStart(), new TestPipeUnion());
         const ctx: TestContext = { isTestContext: true, count: 0 };
         const result = (await pipe.flow(ctx)) as ChainedTarget;
+        Expect(ctx.count).toBe(2);
+        Expect(result.isChainedTarget).toBe(true);
+    }
+
+    @Test("Test sync pipe")
+    testSyncPipe(): void {
+        const pipe = p.pipeSync<TestContext, TestTarget>(new TestPipeStartSync(), new TestPipeUnionSync());
+        const ctx: TestContext = { isTestContext: true, count: 0 };
+        const result = pipe.flow(ctx) as ChainedTarget;
         Expect(ctx.count).toBe(2);
         Expect(result.isChainedTarget).toBe(true);
     }
