@@ -8,7 +8,7 @@ export interface PipeUnion<C, T> {
 export function pipe<C, T>(...elements: PipeUnion<C, T>[]): PipeUnion<C, T> {
     if (elements.length == 0) {
         return new class implements PipeUnion<C, T> {
-            async flow(ctx: C, content: T): Promise<T> {
+            async flow(_: C, content: T): Promise<T> {
                 return content;
             }
         }()
@@ -38,7 +38,7 @@ export interface PipeUnionSync<C, T> {
 export function pipeSync<C, T>(...elements: PipeUnionSync<C, T>[]): PipeUnionSync<C, T> {
     if (elements.length == 0) {
         return new class implements PipeUnionSync<C, T> {
-            flow(ctx: C, content: T): T {
+            flow(_: C, content: T): T {
                 return content;
             }
         }()

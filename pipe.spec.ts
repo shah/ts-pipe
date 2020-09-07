@@ -16,7 +16,7 @@ interface ChainedTarget extends TestTarget {
 }
 
 class TestPipeStart implements p.PipeUnion<TestContext, TestTarget> {
-    async flow(ctx: TestContext, content?: TestTarget): Promise<TestTarget> {
+    async flow(ctx: TestContext): Promise<TestTarget> {
         ctx.count++;
         return {
             isTestObject: true
@@ -36,7 +36,7 @@ class TestPipeUnion implements p.PipeUnion<TestContext, TestTarget> {
 }
 
 class TestPipeStartSync implements p.PipeUnionSync<TestContext, TestTarget> {
-    flow(ctx: TestContext, content?: TestTarget): TestTarget {
+    flow(ctx: TestContext): TestTarget {
         ctx.count++;
         return {
             isTestObject: true
