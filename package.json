@@ -1,6 +1,6 @@
 {
     "name": "@shah/ts-pipe",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "description": "TypeScript context-aware pipe-based typesafe object transformations and enrichment",
     "main": "dist/pipe.js",
     "types": "dist/pipe.d.ts",
